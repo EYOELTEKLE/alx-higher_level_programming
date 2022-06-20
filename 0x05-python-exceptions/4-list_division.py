@@ -10,11 +10,9 @@ def list_division(my_list_1, my_list_2, list_length):
         except TypeError:
             message = "wrong type"
             ans.append(0)
-            pass
         except ZeroDivisionError:
             message2 = "division by 0"
             ans.append(0)
-            pass
         except IndexError:
             message3 = "out of range"
             ans.append(0)
