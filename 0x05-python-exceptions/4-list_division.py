@@ -11,7 +11,7 @@ def list_division(my_list_1, my_list_2, list_length):
             message = "wrong type"
             ans.append(0)
             pass
-        except  ZeroDivisionError:
+        except ZeroDivisionError:
             message2 = "division by 0"
             ans.append(0)
             pass
@@ -21,9 +21,9 @@ def list_division(my_list_1, my_list_2, list_length):
         finally:
             text = 'completion'
     if (message2 != ''):
-                print(message2)
+        print(message2)
     if (message != ''):
-                print(message)
+        print(message)
     if (message3 != ''):
-                print(message3)
+        print(message3)
     return ans
