@@ -1,57 +1,80 @@
 #!/usr/bin/python3
-""" Module to print status code """
-import sys
+"""101-stats.py is a program that reads IP logs from stdin and
+prints metrics every ten lines or until EOF or Ctrl-C.
+IP logs are formatted as in:
+    <IPv4> - [<date>] "GET /projects/260 HTTP/1.1" <status code> <file size>
+Example usage:
+    ~$ ./101-generator.py | ./101-stats.py
+     File size: 5213
+     200: 2
+     401: 1
+     403: 2
+     404: 1
+     405: 1
+     500: 3
+     File size: 11320
+     200: 3
+     301: 2
+     400: 1
+     401: 2
+     403: 3
+     404: 4
+     405: 2
+     500: 3
+     File size: 16305
+     200: 3
+     301: 3
+     400: 4
+     401: 2
+     403: 5
+     404: 5
+     405: 4
+     500: 4
+     ^CFile size: 17146
+     200: 4
+     301: 3
+     400: 4
+     401: 2
+     403: 6
+     404: 6
+     405: 4
+     500: 4
+     Traceback (most recent call last):
+       File "./101-stats.py", line 15, in <module>
+     Traceback (most recent call last):
+       File "./101-generator.py", line 8, in <module>
+         for line in sys.stdin:
+     KeyboardInterrupt
+         sleep(random.random())
+     KeyboardInterrupt
+"""
 
 
-class Magic:
-    """ Class to generates instances with dict and size"""
-    def __init__(self):
-        """ Init method """
-        self.dic = {}
-        self.size = 0
-
-    def init_dic(self):
-        """ Initialize dict """
-        self.dic['200'] = 0
-        self.dic['301'] = 0
-        self.dic['400'] = 0
-        self.dic['401'] = 0
-        self.dic['403'] = 0
-        self.dic['404'] = 0
-        self.dic['405'] = 0
-        self.dic['500'] = 0
-
-    def add_status_code(self, status):
-        """ add repeated number to the status code """
-        if status in self.dic:
-            self.dic[status] += 1
-
-    def print_info(self, sig=0, frame=0):
-        """ print status code """
-        print("File size: {:d}".format(self.size))
-        for key in sorted(self.dic.keys()):
-            if self.dic[key] is not 0:
-                print("{}: {:d}".format(key, self.dic[key]))
-
+def print_dict_sorted_nonzero(status_codes):
+    """Subroutine to print status codes with nonzero value in
+    numericalorder.
+    Args:
+        status_codes (dict): dictionary of status codes and the
+            number of times each one has been returned.
+    """
+    sorted_keys = sorted(status_codes.keys())
+    print('\n'.join(["{:d}: {:d}".format(k, status_codes[k])
+                     for k in sorted_keys if status_codes[k] != 0]))
 
 if __name__ == "__main__":
-    magic = Magic()
-    magic.init_dic()
-    nlines = 0
+    import sys
 
     try:
-        for line in sys.stdin:
-            if nlines % 10 == 0 and nlines is not 0:
-                magic.print_info()
-
-            try:
-                list_line = [x for x in line.split(" ") if x.strip()]
-                magic.add_status_code(list_line[-2])
-                magic.size += int(list_line[-1].strip("\n"))
-            except:
-                pass
-            nlines += 1
-    except KeyboardInterrupt:
-        magic.print_info()
-        raise
-    magic.print_info()
+        total = 0
+        status_codes = \
+            {code: 0 for code in [200, 301, 400, 401, 403, 404, 405, 500]}
+        for n, line in enumerate(sys.stdin, 1):
+            words = line.split()
+            total += int(words[-1])
+            status_codes[int(words[-2])] += 1
+            if n % 10 == 0:
+                print("File size: {:d}".format(total))
+                print_dict_sorted_nonzero(status_codes)
+    finally:
+        print("File size: {:d}".format(total))
+        print_dict_sorted_nonzero(status_codes)
