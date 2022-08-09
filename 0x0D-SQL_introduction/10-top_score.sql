@@ -1,2 +1,4 @@
 -- lists records based on conditons
-select score,name FROM second_table order by score DESC;
+select score,name
+from second_table
+order by score desc;
