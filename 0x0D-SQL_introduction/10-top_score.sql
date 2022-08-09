@@ -1,4 +1,5 @@
--- lists records based on conditons
-select score,name
-from second_table
-order by score desc;
+-- Lists all records of the table second_table.
+-- Records are ordered by descending score.
+SELECT `score`, `name`
+FROM `second_table`
+ORDER BY `score` DESC;
