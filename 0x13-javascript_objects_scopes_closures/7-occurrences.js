@@ -5,5 +5,5 @@ exports.nbOccurences = function (list, searchElement) {
     if (!(item in hash)) hash[item] = 0;
     hash[item] += 1;
   }
-  return hash[searchElement];
+  return hash[searchElement] === undefined ? 0 : hash[searchElement];
 };
