@@ -1,17 +1,15 @@
 #!/usr/bin/python3
-"""main file"""
-if __name__ == '__main__':
-    import sys
-    import MySQLdb
-    conn = MySQLdb.connect(
-        user=sys.argv[1], passwd=sys.argv[2], db=sys.argv[3])
-    cur = conn.cursor()
-    # HERE I have to know SQL to grab all states in my database
-    cur.execute(
-        """SELECT * FROM states WHERE `name` REGEXP BINARY '^N'
-        ORDER BY states.id ASC""")
-    query_rows = cur.fetchall()
-    for row in query_rows:
-        print(row)
-    cur.close()
-    conn.close()
+"""
+Lists all states with a name starting with N from the database hbtn_0e_0_usa.
+Usage: ./1-filter_states.py <mysql username> \
+                             <mysql password> \
+                             <database name>
+"""
+import sys
+import MySQLdb
+
+if __name__ == "__main__":
+    db = MySQLdb.connect(user=sys.argv[1], passwd=sys.argv[2], db=sys.argv[3])
+    c = db.cursor()
+    c.execute("SELECT * FROM `states` ORDER BY `id`")
+    [print(state) for state in c.fetchall() if state[1][0] == "N"]
